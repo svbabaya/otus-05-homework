@@ -1,6 +1,7 @@
 #include <iostream>
 #include <limits>
 #include <vector>
+#include <algorithm>
 
 class IStatistics {
 public:
@@ -10,15 +11,16 @@ public:
 	virtual double eval() const = 0;
 	virtual const char * name() const = 0;
 
-	void sort(std::vector<double> & arr) const {
-		size_t start = 0;
-		for (size_t i = start + 1; i < arr.size(); i++) {
-			for (size_t j = i; j > start && arr[j-1] > arr[j]; j--) {
-				double temp = arr[j - 1];
-				arr[j - 1] = arr[j];
-				arr[j] = temp;
-			}
-		}
+	void sort_numbers(std::vector<double> & arr) const {
+		// size_t start = 0;
+		// for (size_t i = start + 1; i < arr.size(); i++) {
+		// 	for (size_t j = i; j > start && arr[j-1] > arr[j]; j--) {
+		// 		double temp = arr[j - 1];
+		// 		arr[j - 1] = arr[j];
+		// 		arr[j] = temp;
+		// 	}
+		// }
+		sort(arr.begin(), arr.end());
 	}
 
 	double pct(const std::vector<double> & arr, int p) const {
@@ -123,7 +125,7 @@ public:
 	}
 	void update(double next) override {
 		numbers.push_back(next);
-		sort(numbers);
+		sort_numbers(numbers);
 		m_pct = pct(numbers, 90);
 	}
 	double eval() const override {
@@ -143,7 +145,7 @@ public:
 	}
 	void update(double next) override {
 		numbers.push_back(next);
-		sort(numbers);
+		sort_numbers(numbers);
 		m_pct = pct(numbers, 95);
 	}
 	double eval() const override {
