@@ -1,5 +1,6 @@
 #include <iostream>
 #include <limits>
+#include <vector>
 
 class IStatistics {
 public:
@@ -71,28 +72,37 @@ private:
 
 class Std : public IStatistics {
 public:
-	Std() : m_mean{0}, m_count{0}, m_sum{0} {
+	Std() : m_std{0} {
 	}
 	void update(double next) override {
-		m_count++;
-		m_sum += next;
-		m_mean = m_sum / m_count;
+		numbers.push_back(next);
+
+		double sum = 0;
+		for (double d : numbers) {
+			sum += d;
+		}
+		long mean = sum / numbers.size();
+
+		double sumq = 0;
+		for (double d : numbers) {
+			sumq += pow(d - mean, 2);
+		}
+		m_std = pow(sumq / numbers.size(), 0.5);
 	}
 	double eval() const override {
-		return m_mean;
+		return m_std;
 	}
 	const char * name() const override {
-		return "mean";
+		return "std";
 	}
 private:
-	double m_mean;
-	int m_count;
-	double m_sum;
+	double m_std;
+	std::vector<double> numbers;
 };
 
 int main() {
 
-	const size_t statistics_count = 3;
+	const size_t statistics_count = 4;
 	IStatistics *statistics[statistics_count];
 
 	statistics[0] = new Min{};
