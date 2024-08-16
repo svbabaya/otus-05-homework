@@ -51,7 +51,7 @@ private:
 
 class Max : public IStatistics {
 public:
-	Max() : m_max{/*std::numeric_limits<double>::min()*/0} {
+	Max() : m_max{std::numeric_limits<double>::lowest()} {
 	}
 	void update(double next) override {
 		if (next > m_max) {
@@ -164,16 +164,6 @@ int main() {
 	const size_t statistics_count = 6;
 	IStatistics *statistics[statistics_count] = { new Min{}, new Max{}, new Mean{},
 												new Std{}, new Pct90{}, new Pct95{} };
-
-	// statistics[0] = new Min{};
-	// statistics[1] = new Max{};
-	// statistics[2] = new Mean{};
-	// statistics[3] = new Std{};
-	// statistics[4] = new Pct90{};
-	// statistics[5] = new Pct95{};
-
-
-
 	double val = 0;
 	while (std::cin >> val) {
 		for (size_t i = 0; i < statistics_count; ++i) {
