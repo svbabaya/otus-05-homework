@@ -162,14 +162,17 @@ private:
 int main() {
 
 	const size_t statistics_count = 6;
-	IStatistics *statistics[statistics_count];
+	IStatistics *statistics[statistics_count] = { new Min{}, new Max{}, new Mean{},
+												new Std{}, new Pct90{}, new Pct95{} };
 
-	statistics[0] = new Min{};
-	statistics[1] = new Max{};
-	statistics[2] = new Mean{};
-	statistics[3] = new Std{};
-	statistics[4] = new Pct90{};
-	statistics[5] = new Pct95{};
+	// statistics[0] = new Min{};
+	// statistics[1] = new Max{};
+	// statistics[2] = new Mean{};
+	// statistics[3] = new Std{};
+	// statistics[4] = new Pct90{};
+	// statistics[5] = new Pct95{};
+
+
 
 	double val = 0;
 	while (std::cin >> val) {
