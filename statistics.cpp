@@ -1,27 +1,13 @@
 #include <iostream>
 #include <limits>
 #include <vector>
-#include <algorithm>
 
 class IStatistics {
 public:
 	virtual ~IStatistics() {}
-
 	virtual void update(double next) = 0;
 	virtual double eval() const = 0;
 	virtual const char *name() const = 0;
-
-	void sort_numbers(std::vector<double> & arr) const {
-		// size_t start = 0;
-		// for (size_t i = start + 1; i < arr.size(); i++) {
-		// 	for (size_t j = i; j > start && arr[j-1] > arr[j]; j--) {
-		// 		double temp = arr[j - 1];
-		// 		arr[j - 1] = arr[j];
-		// 		arr[j] = temp;
-		// 	}
-		// }
-		sort(arr.begin(), arr.end());
-	}
 };
 
 class Min : public IStatistics {
@@ -116,6 +102,9 @@ private:
 class Pct : public IStatistics {
 public:
 	Pct(int percent) : m_pct{0}, m_percent{percent} {}
+	~Pct() {
+		delete [] name_pct;
+	}
 
 	double pct(const std::vector<double> & arr, const int p) const {
 		size_t index = ceil(p * arr.size() / 100.0) - 1;
@@ -124,7 +113,7 @@ public:
 
 	void update(double next) override {
 		numbers.push_back(next);
-		sort_numbers(numbers);
+		std::sort(numbers.begin(), numbers.end());
 		m_pct = pct(numbers, m_percent);
 	}
 
@@ -135,16 +124,17 @@ public:
 	const char *name() const override {
 		std::string str = "pct" + std::to_string(m_percent);
 		int size_of_str = str.length();
-		char *ch = new char[size_of_str];
+		name_pct = new char[size_of_str];
 		for (int i = 0; i < size_of_str; i++) {
-			ch[i] = str[i];
+			name_pct[i] = str[i];
 		}
-		return ch;
+		return name_pct;
 	}
 
 private:
 	double m_pct;
 	int m_percent;
+	mutable char *name_pct;
 	std::vector<double> numbers;
 };
 
