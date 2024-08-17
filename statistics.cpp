@@ -9,7 +9,7 @@ public:
 
 	virtual void update(double next) = 0;
 	virtual double eval() const = 0;
-	virtual const char * name() const = 0;
+	virtual const char *name() const = 0;
 
 	void sort_numbers(std::vector<double> & arr) const {
 		// size_t start = 0;
@@ -22,12 +22,6 @@ public:
 		// }
 		sort(arr.begin(), arr.end());
 	}
-
-	double pct(const std::vector<double> & arr, int p) const {
-		size_t index = ceil(p * arr.size() / 100.0) - 1;
-		return arr[index];
-	}
-
 };
 
 class Min : public IStatistics {
@@ -119,51 +113,46 @@ private:
 	std::vector<double> numbers;
 };
 
-class Pct90 : public IStatistics {
+class Pct : public IStatistics {
 public:
-	Pct90() : m_pct{0} {
-	}
-	void update(double next) override {
-		numbers.push_back(next);
-		sort_numbers(numbers);
-		m_pct = pct(numbers, 90);
-	}
-	double eval() const override {
-		return m_pct;
-	}
-	const char * name() const override {
-		return "pct90";
-	}
-private:
-	double m_pct;
-	std::vector<double> numbers;
-};
+	Pct(int percent) : m_pct{0}, m_percent{percent} {}
 
-class Pct95 : public IStatistics {
-public:
-	Pct95() : m_pct{0} {
+	double pct(const std::vector<double> & arr, const int p) const {
+		size_t index = ceil(p * arr.size() / 100.0) - 1;
+		return arr[index];
 	}
+
 	void update(double next) override {
 		numbers.push_back(next);
 		sort_numbers(numbers);
-		m_pct = pct(numbers, 95);
+		m_pct = pct(numbers, m_percent);
 	}
+
 	double eval() const override {
 		return m_pct;
 	}
-	const char * name() const override {
-		return "pct95";
+
+	const char *name() const override {
+		std::string str = "pct" + std::to_string(m_percent);
+		int size_of_str = str.length();
+		char *ch = new char[size_of_str];
+		for (int i = 0; i < size_of_str; i++) {
+			ch[i] = str[i];
+		}
+		return ch;
 	}
+
 private:
 	double m_pct;
+	int m_percent;
 	std::vector<double> numbers;
 };
 
 int main() {
 
 	const size_t statistics_count = 6;
-	IStatistics *statistics[statistics_count] = { new Min{}, new Max{}, new Mean{},
-												new Std{}, new Pct90{}, new Pct95{} };
+	IStatistics *statistics[statistics_count] = { new Min(), new Max(), new Mean(),
+												new Std(), new Pct(90), new Pct(95) };
 	double val = 0;
 	while (std::cin >> val) {
 		for (size_t i = 0; i < statistics_count; ++i) {
